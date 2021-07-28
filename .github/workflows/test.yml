@@ -22,6 +22,11 @@ jobs:
         run: |
           echo "Test file 123" > test.txt
 
+      - name: Checkout repo
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+        with:
+          ref: master # TODO: Change to RC.
+
       - name: Upload release assets
         run: |
           hub release edit \
