@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Workflow Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Draft Release
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.retrieve-mobile-version.outputs.mobile_version }}
+          release_name: Version ${{ steps.retrieve-mobile-version.outputs.mobile_version }}
+          draft: true
+          prerelease: false
+
+      - name: Create test files
+        run: |
+          echo "Test file 123" > test.txt
+
+      - name: Upload release assets
+        run: |
+          hub release edit \
+            -a ./test.txt \
+            -m "Version $RELEASE_NAME" \
+            $RELEASE_TAG_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_NAME: 2.11.3
+          RELEASE_TAG_NAME: v2.11.3
