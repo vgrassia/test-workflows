@@ -18,8 +18,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.retrieve-mobile-version.outputs.mobile_version }}
-          release_name: Version ${{ steps.retrieve-mobile-version.outputs.mobile_version }}
+          tag_name: v2.11.3
+          release_name: Version 2.11.3
           draft: true
           prerelease: false
 
@@ -39,5 +39,5 @@ jobs:
             $RELEASE_TAG_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_NAME: '2.11.3'
-          RELEASE_TAG_NAME: 'v2.11.3'
+          RELEASE_NAME: 2.11.3
+          RELEASE_TAG_NAME: v2.11.3
