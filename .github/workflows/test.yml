@@ -24,7 +24,13 @@ jobs:
 
       - name: List contents of directory
         run: |
-          ls -alh
+          pwd
+          ls -alh $HOME
+          ls -alh .
+          ls -alh ..
+          ls -alh ../..
+          ls -alh ../../..
+          ls -alh /
 
       - name: Checkout repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
