@@ -1,43 +1,23 @@
+---
 name: Test
 
-on:
-  workflow_dispatch:
+on: [
+  push,
+  pull_request
+]
 
 jobs:
   test:
     name: Workflow Testing
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
-        with:
-          ref: master # TODO: Change to RC.
-
-      - name: Create Draft Release
-        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v2.11.3
-          release_name: Version 2.11.3
-          draft: true
-          prerelease: false
-
-      - name: Create test files
+      - name: TEST STEP 1
         run: |
-          echo "Test file 123" > test.txt
+          echo "${{ github.event.pull_request.head.repo.full_name }}"
+          echo "${{ github.repository }}"
 
-      - name: List contents of directory
+      - name: TEST STEP 2
+        if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          ls -alh
-
-      - name: Upload release assets
-        run: |
-          hub release edit \
-            -a ./test.txt \
-            -m "Version $RELEASE_NAME" \
-            $RELEASE_TAG_NAME
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_NAME: 2.11.3
-          RELEASE_TAG_NAME: v2.11.3
+          echo "${{ github.event.pull_request.head.repo.full_name }}"
+          echo "${{ github.repository }}"
