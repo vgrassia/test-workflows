@@ -17,7 +17,8 @@ jobs:
           echo "${{ github.repository }}"
 
       - name: TEST STEP 2
-        if: github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event.pull_request && (github.event.pull_request.head.repo.full_name != github.repository)
         run: |
+          echo "Stop running workflow, merge to other branch."
           echo "${{ github.event.pull_request.head.repo.full_name }}"
           echo "${{ github.repository }}"
