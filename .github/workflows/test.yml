@@ -17,5 +17,6 @@ jobs:
         run: |
           which snap
           snap --help
+          snap help info
           snap info bitwarden
 
