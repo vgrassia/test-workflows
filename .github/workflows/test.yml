@@ -15,10 +15,6 @@ jobs:
 
       - name: TEST STEP 1
         run: |
-          which snap
-          snap --help
-          snap help find
-          snap help list
-          snap help info
-          snap info bitwarden | grep "latest/stable" | perl -pe 'if(($v)=/([0-9]+([.][0-9]+)+)/){print"$v\n";exit}$_=""'
+          VERSION=$(snap info bitwarden | grep "latest/stable" | perl -pe 'if(($v)=/([0-9]+([.][0-9]+)+)/){print"$v\n";exit}$_=""')
+          echo "v${VERSION}"
 
