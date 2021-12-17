@@ -26,5 +26,5 @@ jobs:
       - name: TEST STEP 3
         run: |
           snapcraft status --help
-          snapcraft status --arch amd64 bitwarden
+          snapcraft status bw
 
