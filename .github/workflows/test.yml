@@ -8,14 +8,14 @@ jobs:
     name: Workflow Testing
     runs-on: ubuntu-20.04
     steps:
-      - name: Install Snapcraft
-        uses: samuelmeuli/action-snapcraft@10d7d0a84d9d86098b19f872257df314b0bd8e2d  # v1.2.0
-        with:
-          snapcraft_token: ${{ secrets.SNAP_TOKEN }}
+      # - name: Install Snapcraft
+      #   uses: samuelmeuli/action-snapcraft@10d7d0a84d9d86098b19f872257df314b0bd8e2d  # v1.2.0
+      #   with:
+      #     snapcraft_token: ${{ secrets.SNAP_TOKEN }}
 
       - name: TEST STEP 1
         run: |
           which snap
-          snap --hellp
+          snap --help
           snap info bitwarden
 
