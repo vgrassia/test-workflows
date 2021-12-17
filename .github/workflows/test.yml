@@ -20,5 +20,8 @@ jobs:
           snapcraft list --help
           snapcraft pull --help
           snapcraft refresh --help
+
+      - name: TEST STEP 3
+        run: |
           snapcraft status --help
 
