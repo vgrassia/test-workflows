@@ -15,16 +15,7 @@ jobs:
 
       - name: TEST STEP 1
         run: |
-          snapcraft --help
-
-      - name: TEST STEP 2
-        run: |
-          snapcraft list --help
-          snapcraft pull --help
-          snapcraft refresh --help
-
-      - name: TEST STEP 3
-        run: |
-          snapcraft status --help
-          snapcraft status bw
+          which snap
+          snap --hellp
+          snap info bitwarden
 
