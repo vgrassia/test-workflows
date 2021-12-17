@@ -1,23 +1,21 @@
 ---
 name: Test
 
-on: [
-  push,
-  pull_request
-]
+on: push
 
 jobs:
   test:
     name: Workflow Testing
     runs-on: ubuntu-20.04
     steps:
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@10d7d0a84d9d86098b19f872257df314b0bd8e2d  # v1.2.0
+
       - name: TEST STEP 1
         run: |
-          echo "${{ github.event.pull_request.head.repo.full_name }}"
-          echo "${{ github.repository }}"
+          snapcraft --help
 
       - name: TEST STEP 2
-        if: github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          echo "${{ github.event.pull_request.head.repo.full_name }}"
-          echo "${{ github.repository }}"
+          snapcraft upload --help
+
