@@ -18,5 +18,5 @@ jobs:
           which snap
           snap --help
           snap help info
-          snap info bitwarden | grep "latest/stable"
+          snap info bitwarden | grep "latest/stable" | grep -Po '(?<=:)[^;]+'
 
