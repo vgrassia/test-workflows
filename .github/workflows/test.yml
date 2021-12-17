@@ -17,5 +17,8 @@ jobs:
 
       - name: TEST STEP 2
         run: |
-          snapcraft upload --help
+          snapcraft list --help
+          snapcraft pull --help
+          snapcraft refresh --help
+          snapcraft status --help
 
