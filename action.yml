@@ -24,7 +24,7 @@ runs:
           VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
           #echo "::add-mask::$VALUE"
           echo "SECRET VALUE: $VALUE"
-          echo "::set-output name=$VALUE::$VALUE"
+          echo "::set-output name=$i::$VALUE"
         done
     - name: TEST STEP
       shell: bash
