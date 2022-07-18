@@ -1,0 +1,20 @@
+name: "Get Key Vault Secrets"
+description: "Retrieve one or more secrets from an Azure Key Vault"
+inputs:
+  keyvault:
+    description: "Name of the Azure Key Vault"
+    required: true
+  secrets:
+    description: "Name of the secret(s) to be fetched"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Azure CLI script
+      id: get-secrets
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          MYVALUE=$(az keyvault secret show --vault-name vgrassia-test-kv --name my-test-secret --query value --output tsv)
+          echo "::add-mask::$MYVALUE"
+          echo "::set-output name=my_test_output::$MYVALUE"

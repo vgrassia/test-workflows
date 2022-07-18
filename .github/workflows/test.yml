@@ -26,4 +26,6 @@ jobs:
 
     - name: TEST STEP
       run: |
+        which az
+        az version
         echo "TEST VALUE: ${{ steps.get-secrets.outputs.my_test_output }}"
