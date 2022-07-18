@@ -22,7 +22,8 @@ jobs:
       uses: ./
       with:
         keyvault: "vgrassia-test-kv"
-        secrets: "my-test-secret"
+        secrets: "my-test-secret,
+                  my-test-secret-2"
 
     - name: TEST STEP
       run: |
