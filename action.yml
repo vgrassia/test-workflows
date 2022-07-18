@@ -26,7 +26,3 @@ runs:
           echo "SECRET VALUE: $VALUE"
           echo "::set-output name=$i::$VALUE"
         done
-    - name: TEST STEP
-      shell: bash
-      run: |
-        echo "TEST VALUE: ${{ steps.get-secrets.outputs.my-test-secret }}"

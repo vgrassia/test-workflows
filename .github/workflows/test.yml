@@ -28,3 +28,4 @@ jobs:
     - name: TEST STEP
       run: |
         echo "TEST VALUE: ${{ steps.retrieve-secrets.outputs.my-test-secret }}"
+        echo "TEST VALUE 2: ${{ steps.retrieve-secrets.outputs.my-test-secret-2 }}"
