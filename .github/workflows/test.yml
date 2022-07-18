@@ -25,11 +25,8 @@ jobs:
       run: |
         for i in ${SECRETS//,/ }
         do
-          echo "KEYVAULT: $KEYVAULT"
-          echo "SECRET: $i"
           VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-          #echo "::add-mask::$VALUE"
-          echo "SECRET VALUE: $VALUE"
+          echo "::add-mask::$VALUE"
           echo "::set-output name=$i::$VALUE"
         done
 
