@@ -10,20 +10,20 @@ jobs:
     name: Workflow Testing
     runs-on: ubuntu-20.04
     steps:
+    - uses: actions/checkout@v1
+
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Azure CLI script
-      id: get-secrets
-      run: |
-        MYVALUE=$(az keyvault secret show --vault-name vgrassia-test-kv --name my-test-secret --query value --output tsv)
-        echo "::add-mask::$MYVALUE"
-        echo "::set-output name=my_test_output::$MYVALUE"
+      id: retrieve-secrets
+      uses: .
+      with:
+        keyvault: "vgrassia-test-kv"
+        secrets: "my-test-secret"
 
     - name: TEST STEP
       run: |
-        which az
-        az version
-        echo "TEST VALUE: ${{ steps.get-secrets.outputs.my_test_output }}"
+        echo "TEST VALUE: ${{ steps.retrieve-secrets.outputs.my-test-secret }}"
