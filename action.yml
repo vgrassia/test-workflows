@@ -11,6 +11,7 @@ runs:
   using: "composite"
   steps:
     - name: Azure CLI script
+      id: get-secrets
       shell: bash
       env:
         KEYVAULT: ${{ inputs.keyvault }}
@@ -22,5 +23,9 @@ runs:
           echo "SECRET: $i"
           VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
           #echo "::add-mask::$VALUE"
+          echo "SECRET VALUE: $VALUE"
           echo "::set-output name=$VALUE::$VALUE"
         done
+    - name: TEST STEP
+      run: |
+        echo "TEST VALUE: ${{ steps.get-secrets.outputs.my-test-secret }}"
