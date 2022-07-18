@@ -10,22 +10,12 @@ jobs:
     name: Workflow Testing
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v1
-
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # - name: Azure CLI script
-    #   id: retrieve-secrets
-    #   uses: ./
-    #   with:
-    #     keyvault: "vgrassia-test-kv"
-    #     secrets: "my-test-secret,
-    #               my-test-secret-2"
-
-    - name: Retrieve secrets
+    - name: Retrieve Secrets
       id: retrieve-secrets
       env:
         KEYVAULT: vgrassia-test-kv
