@@ -24,4 +24,5 @@ jobs:
           echo "::set-output name=my_test_output::$MYVALUE"
 
     - name: TEST STEP
-      run: echo "TEST VALUE: ${{ steps.get-secrets.outputs.my_test_output }}"
+      run: |
+        echo "TEST VALUE: ${{ steps.get-secrets.outputs.my_test_output }}"
