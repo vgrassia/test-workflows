@@ -21,6 +21,7 @@ jobs:
       with:
         inlineScript: |
           MYVALUE=$(az keyvault secret show --vault-name vgrassia-test-kv --name my-test-secret --query value --output tsv)
+          echo "::add-mask::$MYVALUE"
           echo "::set-output name=my_test_output::$MYVALUE"
 
     - name: TEST STEP
