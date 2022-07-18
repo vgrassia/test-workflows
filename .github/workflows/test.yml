@@ -8,7 +8,7 @@ jobs:
     name: Workflow Testing
     runs-on: ubuntu-20.04
     steps:
-      - name: Azure Login
+    - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
