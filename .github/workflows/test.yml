@@ -17,13 +17,31 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Azure CLI script
+    # - name: Azure CLI script
+    #   id: retrieve-secrets
+    #   uses: ./
+    #   with:
+    #     keyvault: "vgrassia-test-kv"
+    #     secrets: "my-test-secret,
+    #               my-test-secret-2"
+
+    - name: Retrieve secrets
       id: retrieve-secrets
-      uses: ./
-      with:
-        keyvault: "vgrassia-test-kv"
-        secrets: "my-test-secret,
-                  my-test-secret-2"
+      env:
+        KEYVAULT: vgrassia-test-kv
+        SECRETS: |
+          my-test-secret,
+          my-test-secret-2
+      run: |
+        for i in ${SECRETS//,/ }
+        do
+          echo "KEYVAULT: $KEYVAULT"
+          echo "SECRET: $i"
+          VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
+          #echo "::add-mask::$VALUE"
+          echo "SECRET VALUE: $VALUE"
+          echo "::set-output name=$i::$VALUE"
+        done
 
     - name: TEST STEP
       run: |
