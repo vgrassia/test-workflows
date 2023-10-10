@@ -11,4 +11,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: See if Skopeo exists in runner
-      run: skopeo --version
+      run: |
+        apt-get update
+        apt-get install skopeo
+        skopeo --version
