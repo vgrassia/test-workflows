@@ -8,29 +8,7 @@ on:
 jobs:
   test:
     name: Workflow Testing
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Retrieve Secrets
-      id: retrieve-secrets
-      env:
-        KEYVAULT: vgrassia-test-kv
-        SECRETS: |
-          my-test-secret,
-          my-test-secret-2
-      run: |
-        for i in ${SECRETS//,/ }
-        do
-          VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-          echo "::add-mask::$VALUE"
-          echo "::set-output name=$i::$VALUE"
-        done
-
-    - name: TEST STEP
-      run: |
-        echo "TEST VALUE: ${{ steps.retrieve-secrets.outputs.my-test-secret }}"
-        echo "TEST VALUE 2: ${{ steps.retrieve-secrets.outputs.my-test-secret-2 }}"
+    - name: See if Skopeo exists in runner
+      run: skopeo --version
