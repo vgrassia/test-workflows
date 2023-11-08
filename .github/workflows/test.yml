@@ -8,10 +8,11 @@ on:
 jobs:
   test:
     name: Workflow Testing
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-    - name: See if Skopeo exists in runner
-      run: |
-        sudo apt-get update
-        sudo apt-get install skopeo
-        skopeo --version
+    - name: Test
+      run: echo "${{ matrix.os }} - $(uname -p)"
+      shell: bash
