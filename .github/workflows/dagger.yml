@@ -1,0 +1,32 @@
+name: Dagger
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Dagger CLI
+        run: cd /usr/local && { curl -L https://dl.dagger.io/dagger/install.sh | sh; cd -; }
+
+      - name: Run Dagger pipeline
+        env:
+          DAGGER_CLOUD_TOKEN: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+        run: dagger run node server.js
+
+      # for ephemeral runners only: override the default docker stop timeout and
+      # give the Dagger Engine more time to push cache data to Dagger Cloud
+      - name: Stop Engine
+        if: always()
+        run: docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
