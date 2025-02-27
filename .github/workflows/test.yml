@@ -16,3 +16,15 @@ jobs:
     - name: Test
       run: echo "${{ matrix.os }} - $(uname -p)"
       shell: bash
+    
+    - name: Step name
+      uses: bitwarden/sm-action@v1
+      with:
+        access_token: ${{ secrets.ACCESS_TOKEN }}
+        base_url: https://vault.qa.bitwarden.pw
+        secrets: |
+          6bf08e08-511f-4e96-bb14-b1c6014e275c > SECRET_VALUE
+
+    - name: ENV
+      run: env
+      shell: bash
