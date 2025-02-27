@@ -21,7 +21,9 @@ jobs:
       uses: bitwarden/sm-action@v1
       with:
         access_token: ${{ secrets.ACCESS_TOKEN }}
+        api_url: https://api.qa.bitwarden.pw
         base_url: https://vault.qa.bitwarden.pw
+        identity_url: https://identity.qa.bitwarden.pw
         secrets: |
           6bf08e08-511f-4e96-bb14-b1c6014e275c > SECRET_VALUE
 
