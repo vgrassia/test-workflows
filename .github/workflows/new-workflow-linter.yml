@@ -1,0 +1,16 @@
+---
+    name: New Workflow linter
+    
+    on:
+      workflow_dispatch:
+    
+    permissions: read-all
+    
+    jobs:
+      call-workflow:
+        uses: ./.github/workflows/workflow-linter.yml
+        permissions:
+          contents: read
+          checks: write
+          pull-requests: write
+    
