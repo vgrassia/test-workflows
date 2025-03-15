@@ -16,3 +16,4 @@ jobs:
     - name: Test
       run: echo "${{ matrix.os }} - $(uname -p)"
       shell: bash
+      
