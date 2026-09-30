@@ -1,4 +1,4 @@
-name: Live log tap test
+name: Live log tap test v2
 
 on:
   workflow_dispatch:
@@ -15,30 +15,60 @@ jobs:
         run: |
           pages=$(find /home/runner -type d -path '*/_diag/pages' 2>/dev/null | head -1)
           echo "Pages dir: $pages"
-          ls -la "$pages"
-          # The job-level log is the oldest page file; step-level pages come and go.
-          job_page=$(ls -tr "$pages"/*.log | head -1)
-          echo "Job page: $job_page"
-          # Swap `cat >>` for a shipper (curl, vector, fluent-bit, etc.) in real use.
-          nohup bash -c "tail -n +1 -F '$job_page' | while IFS= read -r l; do printf '%s tap=%s\n' \"\$(date -u +%H:%M:%S.%N)\" \"\$l\"; done >> /tmp/tap.log" \
-            >/dev/null 2>&1 &
+          cat > /tmp/tap.py <<'EOF'
+          import glob, os, sys, time
+
+          # Open every page file as soon as it appears and keep the handle, so the
+          # runner deleting the file after upload doesn't lose unread data.
+          pages = sys.argv[1]
+          out = open("/tmp/tap.log", "a", buffering=1)
+          files = {}
+          while True:
+              for path in glob.glob(os.path.join(pages, "*.log")):
+                  if path not in files:
+                      try:
+                          files[path] = [open(path, "rb"), b""]
+                      except FileNotFoundError:
+                          pass
+              for path, state in files.items():
+                  data = state[0].read()
+                  if not data:
+                      continue
+                  state[1] += data
+                  *lines, state[1] = state[1].split(b"\n")
+                  now = time.strftime("%H:%M:%S", time.gmtime()) + f".{int(time.time() * 1000) % 1000:03d}"
+                  record = os.path.basename(path)[37:45]
+                  for line in lines:
+                      out.write(f"{now} rec={record} {line.decode('utf-8', 'replace')}\n")
+              time.sleep(0.1)
+          EOF
+          nohup python3 /tmp/tap.py "$pages" >/tmp/tap.err 2>&1 &
           echo "Tap PID: $!"
 
-      - name: Emit output slowly, including a masked value
+      - name: Emit low-volume output with a masked value
         env:
           FAKE_SECRET: ${{ secrets.LIVE_LOG_TAP_TEST_SECRET || 'not-a-real-secret-123' }}
         run: |
           echo "::add-mask::$FAKE_SECRET"
           for i in $(seq 1 10); do
-            echo "line $i at $(date -u +%H:%M:%S.%N) secret=$FAKE_SECRET"
-            sleep 2
+            echo "slow line $i at $(date -u +%H:%M:%S.%N) secret=$FAKE_SECRET"
+            sleep 1
+          done
+
+      - name: Emit high-volume output
+        run: |
+          for i in $(seq 1 200); do
+            printf 'fast line %03d at %s %s\n' "$i" "$(date -u +%H:%M:%S.%N)" "$(head -c 60 /dev/zero | tr '\0' 'x')"
+            sleep 0.05
           done
 
       - name: Show what the tap captured
         if: always()
         run: |
           sleep 2
-          echo "=== /tmp/tap.log ==="
-          cat /tmp/tap.log
-          echo "=== any unmasked secret leaks? ==="
+          echo "=== tap errors ==="
+          cat /tmp/tap.err
+          echo "=== captured lines (##[ rewritten so the log viewer doesn't eat them) ==="
+          grep -E 'slow line|fast line (0[0-9]0|200)|secret' /tmp/tap.log | sed 's/##\[/#-[/g'
+          echo "=== unmasked secret occurrences ==="
           grep -c 'not-a-real-secret-123' /tmp/tap.log || true
