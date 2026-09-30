@@ -1,0 +1,44 @@
+name: Live log tap test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tap:
+    name: Tap masked live log
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start background log tap
+        run: |
+          pages=$(find /home/runner -type d -path '*/_diag/pages' 2>/dev/null | head -1)
+          echo "Pages dir: $pages"
+          ls -la "$pages"
+          # The job-level log is the oldest page file; step-level pages come and go.
+          job_page=$(ls -tr "$pages"/*.log | head -1)
+          echo "Job page: $job_page"
+          # Swap `cat >>` for a shipper (curl, vector, fluent-bit, etc.) in real use.
+          nohup bash -c "tail -n +1 -F '$job_page' | while IFS= read -r l; do printf '%s tap=%s\n' \"\$(date -u +%H:%M:%S.%N)\" \"\$l\"; done >> /tmp/tap.log" \
+            >/dev/null 2>&1 &
+          echo "Tap PID: $!"
+
+      - name: Emit output slowly, including a masked value
+        env:
+          FAKE_SECRET: ${{ secrets.LIVE_LOG_TAP_TEST_SECRET || 'not-a-real-secret-123' }}
+        run: |
+          echo "::add-mask::$FAKE_SECRET"
+          for i in $(seq 1 10); do
+            echo "line $i at $(date -u +%H:%M:%S.%N) secret=$FAKE_SECRET"
+            sleep 2
+          done
+
+      - name: Show what the tap captured
+        if: always()
+        run: |
+          sleep 2
+          echo "=== /tmp/tap.log ==="
+          cat /tmp/tap.log
+          echo "=== any unmasked secret leaks? ==="
+          grep -c 'not-a-real-secret-123' /tmp/tap.log || true
